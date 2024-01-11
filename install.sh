@@ -82,3 +82,9 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
+
+# Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
+curl -s https://raw.githubusercontent.com/bradallenfisher/motd/master/motd.sh > /tmp/motd.sh
+chmod +x /tmp/motd.sh
+sudo mv /tmp/motd.sh /etc/update-motd.d/99-motd
+sudo update-motd
