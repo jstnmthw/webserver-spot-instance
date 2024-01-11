@@ -3,10 +3,6 @@
 # Latest version of docker-compose
 docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
 
-# AWS config
-aws_default_region=$(aws configure get region)
-aws_bucket_url=$2 # s3://bucket-name
-
 # Username
 username=$1
 
@@ -73,7 +69,10 @@ sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compo
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Associate Elastic IP
+aws_default_region=$(aws configure get region)
+aws_bucket_url=$2 # s3://bucket-name
 aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_url}/elastic-ip.txt - | tr -d '\r')
 aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
+
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
