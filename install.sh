@@ -5,7 +5,7 @@ docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/rel
 
 # If arguments 1 and 2 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 <username> <aws_bucket_url>"
+  echo "Usage: $0 <username> <aws_bucket_name>"
   exit 1;
 fi
 
