@@ -7,7 +7,7 @@ docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/rel
 aws_default_region="ap-southeast-1"
 aws_bucket_url="s3://archive-6"
 
-# username
+# Username
 username=$1
 
 # Default user
