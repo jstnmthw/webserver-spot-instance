@@ -4,8 +4,8 @@
 docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
 
 # AWS config
-aws_default_region="ap-southeast-1"
-aws_bucket_url="s3://archive-6"
+aws_default_region=$(aws configure get region)
+aws_bucket_url=$2 # s3://bucket-name
 
 # Username
 username=$1
