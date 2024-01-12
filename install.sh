@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Latest version of docker-compose
-
 # If arguments 1 and 2 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: $0 <username> <aws_bucket_name>"
