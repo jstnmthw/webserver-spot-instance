@@ -2,7 +2,7 @@
 
 # If arguments 1 and 2 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ]; then
-  echo "Usage: $0 <username> <aws_bucket_name>"
+  echo "Usage: $0 <username> <aws_bucket_name> <aws_region>"
   exit 1;
 fi
 
@@ -55,6 +55,7 @@ echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
 
 # Restart the SSH service for changes to take effect
+sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
 systemctl restart ssh
 
 # Install docker-compose
@@ -63,12 +64,18 @@ sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compo
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Associate Elastic IP
-aws_default_region=$(aws configure get region)
+aws_default_region=$3 || "ap-southeast-1"
 aws_bucket_url=$2
 aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_url}/elastic-ip.txt - | tr -d '\r')
 aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
+
+# Setup ufw firewall with http and https open and ssh open on port 22 and 
+sudo ufw allow 666/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw --force enable
 
 # Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
 sudo chmod -x /etc/update-motd.d/*
