@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # If arguments 1 and 2 are not provided, exit with a message
-if [ -z "$1" ] || [ -z "$2" ]; then
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
   echo "Usage: $0 <username> <aws_bucket_name> <aws_region>"
   exit 1;
 fi
@@ -64,9 +64,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compo
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Associate Elastic IP
-aws_default_region=$3 || "ap-southeast-1"
-aws configure set default.region $aws_default_region
-
+aws configure set default.region $3
 aws_bucket_url=$2
 aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_url}/elastic-ip.txt - | tr -d '\r')
 aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
