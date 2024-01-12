@@ -137,5 +137,5 @@ get_uptime
 get_cpu_usage
 get_ram_usage
 get_disk_space
-get_check_updates
-get_check_reboot
+# get_check_updates
+# get_check_reboot
