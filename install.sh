@@ -32,7 +32,7 @@ hostnamectl set-hostname webserver
 sudo $package_manager update -y
 
 # Install Docker
-sudo $package_manager install docker -y
+sudo $package_manager install docker.io -y
 sudo service docker start
 
 # Install services
@@ -71,9 +71,14 @@ aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
 # Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
+sudo chmod -x /etc/update-motd.d/*
+sudo rm /etc/update-motd.d/*landscape*
+sudo chmod +x /etc/update-motd.d/*updates-available
+sudo chmod +x /etc/update-motd.d/*reboot-required
+
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
 chmod +x /tmp/motd.sh
-sudo mv /tmp/motd.sh /etc/update-motd.d/99-motd
+sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
 
 if [ -n "$(command -v yum)" ]; then  
   sudo update-motd
