@@ -36,7 +36,7 @@ sudo $package_manager install docker.io -y
 sudo service docker start
 
 # Install services
-sudo $package_manager install git awscli iftop -y
+sudo $package_manager install git awscli iftop fail2ban -y
 
 # Install user and add to docker group
 useradd -m -s /bin/bash $username
@@ -71,11 +71,20 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
-# Setup ufw firewall with http and https open and ssh open on port 22 and 
-sudo ufw allow 666/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
+# Setup ufw firewall with http and https open and ssh open on port 22 and deny everything else then presist the rules
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow 666
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
 sudo ufw --force enable
+
+# Setup fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo sed -i 's/bantime  = 10m/bantime  = 1h/g' /etc/fail2ban/jail.local
+sudo sed -i 's/findtime  = 10m/findtime  = 1h/g' /etc/fail2ban/jail.local
+sudo sed -i 's/maxretry = 5/maxretry = 3/g' /etc/fail2ban/jail.local
+sudo systemctl restart fail2ban
 
 # Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
 sudo chmod -x /etc/update-motd.d/*
