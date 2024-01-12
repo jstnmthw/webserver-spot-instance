@@ -65,6 +65,8 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # Associate Elastic IP
 aws_default_region=$3 || "ap-southeast-1"
+aws configure set default.region $aws_default_region
+
 aws_bucket_url=$2
 aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_url}/elastic-ip.txt - | tr -d '\r')
 aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
