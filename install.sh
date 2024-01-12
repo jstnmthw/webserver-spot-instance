@@ -84,7 +84,7 @@ sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 sudo sed -i 's/bantime  = 10m/bantime  = 1h/g' /etc/fail2ban/jail.local
 sudo sed -i 's/findtime  = 10m/findtime  = 1h/g' /etc/fail2ban/jail.local
 sudo sed -i 's/maxretry = 5/maxretry = 3/g' /etc/fail2ban/jail.local
-sudo systemctl restart fail2ban
+sudo systemctl start fail2ban
 
 # Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
 sudo chmod -x /etc/update-motd.d/*

@@ -129,6 +129,21 @@ generate_progress_bar() {
   printf "\033[0m]\n\n"
 }
 
+get_fail2ban_status() {
+  fail2ban_status=$(systemctl status fail2ban | grep Active | awk '{print $2}')
+  if [ "$fail2ban_status" == "active" ]; then
+    color=${green}
+  else
+    color=${red}
+  fi
+  printf "Fail2ban: ${color}⬤ Online${reset_color}\n"
+}
+
+get_fail2ban_count() {
+  fail2ban_count=$(fail2ban-client status | grep "Number of jail:" | awk '{print $5}')
+  printf "Fail2ban Count: ${green}$fail2ban_count${reset_color}\n"
+}
+
 # Display the MOTD
 clear
 get_os
@@ -136,6 +151,8 @@ get_ascii_header
 get_uptime
 get_cpu_usage
 get_ram_usage
+get_fail2ban_status
+get_fail2ban_count
 get_disk_space
 # get_check_updates
 # get_check_reboot
