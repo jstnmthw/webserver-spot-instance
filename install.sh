@@ -71,12 +71,12 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
-# Setup ufw firewall with http and https open and ssh open on port 22 and deny everything else then presist the rules
-sudo ufw allow http
-sudo ufw allow https
-sudo ufw allow 666
+# Setup ufw firewall with deny rules and then allow rules
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
+sudo ufw allow 666
+sudo ufw allow http
+sudo ufw allow https
 sudo ufw --force enable
 
 # Setup fail2ban
