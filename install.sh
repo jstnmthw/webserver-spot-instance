@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Latest version of docker-compose
-docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
 
 # If arguments 1 and 2 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ]; then
@@ -24,16 +23,6 @@ elif [ -n "$(command -v apt-get)" ]; then
   default_user="ubuntu"
 else
   echo "No package manager found. Exiting..."
-  exit 1;
-fi
-
-# Detect wheel or sudo
-if [ -n "$(command -v wheel)" ]; then
-  admin_type="wheel"
-elif [ -n "$(command -v sudo)" ]; then
-  admin_type="sudo"
-else
-  echo "No sudo or wheel found. Exiting..."
   exit 1;
 fi
 
@@ -61,8 +50,8 @@ cp /home/$default_user/.ssh/authorized_keys /home/$username/.ssh/
 chown -R $username:$username /home/$username/.ssh
 
 # Add the new user to the sudoers group (optional, for administrative privileges)
-usermod -aG $admin_type $username
-echo '$username ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/$username
+usermod -aG sudo $username
+echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
 # Customize the shell prompt to display the username and hostname
 echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
@@ -71,6 +60,7 @@ echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
 systemctl restart ssh
 
 # Install docker-compose
+docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
 sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -86,4 +76,7 @@ aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elasti
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
 chmod +x /tmp/motd.sh
 sudo mv /tmp/motd.sh /etc/update-motd.d/99-motd
-sudo update-motd
+
+if [ -n "$(command -v yum)" ]; then  
+  sudo update-motd
+fi

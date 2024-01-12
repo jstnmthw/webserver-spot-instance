@@ -25,6 +25,7 @@ else
   exit 1;
 fi
 
+# Display the OS
 get_os() {
   os=$(cat /etc/os-release | grep PRETTY_NAME | cut -d "=" -f 2- | sed 's/"//g')
   printf "${dark_grey}Welcome to $os\n"
@@ -106,7 +107,7 @@ generate_progress_bar() {
 
   # Check percentage, if under 50% set color to green, 
   # if under 75% set color to yellow, 
-  # else set color to red
+  # else set color to red.
   if [ "$percentage" -lt 50 ]; then
     color_code="\033[0;32m"
   elif [ "$percentage" -lt 75 ]; then
