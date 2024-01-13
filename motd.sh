@@ -136,7 +136,7 @@ get_fail2ban_status() {
   else
     color=${red}
   fi
-  printf "Fail2ban: ${color}⬤ Online${reset_color}\n"
+  printf "Fail2ban: ${color}Online${reset_color}\n"
 }
 
 get_fail2ban_count() {
