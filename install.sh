@@ -49,6 +49,7 @@ chown -R $username:$username /home/$username/.ssh
 
 # Add the new user to the sudoers group (optional, for administrative privileges)
 usermod -aG sudo $username
+cp /etc/skel/.bashrc /home/$username/.bashrc
 echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
 # Customize the shell prompt to display the username and hostname
