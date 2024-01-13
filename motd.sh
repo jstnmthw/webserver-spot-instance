@@ -2,8 +2,8 @@
 
 # Color codes
 red="\033[0;31m"
-yellow="\033[0;33m"
-green="\033[1;32m"
+yellow="\033[38;5;154m"
+green="\033[38;5;69m"
 blue="\033[1;34m"
 purple="\033[1;35m"
 violet="\033[0;35m"
@@ -28,17 +28,17 @@ fi
 # Display the OS
 get_os() {
   os=$(cat /etc/os-release | grep PRETTY_NAME | cut -d "=" -f 2- | sed 's/"//g')
-  printf "${dark_grey}Welcome to $os [0m\n"
+  printf "${dark_grey}Welcome to $os \033[0m\n"
 }
 
 # Display the ASCII header
 get_ascii_header() {
   printf "%b\n" \
-  "[38;5;128m __[38;5;129m___[38;5;93m___[38;5;99m    [38;5;63m   [38;5;69m  _[38;5;33m_   [38;5;39m  _[38;5;38m___[38;5;44m___ [38;5;43m   [38;5;49m   [38;5;48m    [38;5;84m   [38;5;83m   [38;5;119m    [38;5;118m   [38;5;154m   [38;5;148m   " \
-  "[38;5;128m|  [38;5;129m|  [38;5;93m|  [38;5;99m|.-[38;5;63m----[38;5;69m.| [38;5;33m |--[38;5;39m.| [38;5;38m   [38;5;44m __[38;5;43m|.--[38;5;49m---[38;5;48m.--[38;5;84m--.-[38;5;83m-.-[38;5;119m-.--[38;5;118m---[38;5;154m.--[38;5;148m--." \
-  "[38;5;128m| [38;5;129m |  [38;5;93m|  [38;5;99m|| [38;5;63m -_[38;5;69m_|| [38;5;33m _ [38;5;39m ||[38;5;38m__  [38;5;44m   [38;5;43m||  [38;5;49m-__[38;5;48m|  [38;5;84m _| [38;5;83m | [38;5;119m | [38;5;118m -_[38;5;154m_|  [38;5;148m _|" \
-  "[38;5;128m|_[38;5;129m___[38;5;93m___[38;5;99m_||_[38;5;63m___[38;5;69m_||[38;5;33m____[38;5;39m_||[38;5;38m___[38;5;44m____[38;5;43m||_[38;5;49m___[38;5;48m_|__[38;5;84m|  [38;5;83m\__[38;5;119m_/|_[38;5;118m___[38;5;154m_|_[38;5;148m_|  " \
-  "[0m"
+  "\033[38;5;128m __\033[38;5;129m___\033[38;5;93m___\033[38;5;99m    \033[38;5;63m   \033[38;5;69m  _\033[38;5;33m_   \033[38;5;39m  _\033[38;5;38m___\033[38;5;44m___ \033[38;5;43m   \033[38;5;49m   \033[38;5;48m    \033[38;5;84m   \033[38;5;83m   \033[38;5;119m    \033[38;5;118m   \033[38;5;154m   \033[38;5;148m   " \
+  "\033[38;5;128m|  \033[38;5;129m|  \033[38;5;93m|  \033[38;5;99m|.-\033[38;5;63m----\033[38;5;69m.| \033[38;5;33m |--\033[38;5;39m.| \033[38;5;38m   \033[38;5;44m __\033[38;5;43m|.--\033[38;5;49m---\033[38;5;48m.--\033[38;5;84m--.-\033[38;5;83m-.-\033[38;5;119m-.--\033[38;5;118m---\033[38;5;154m.--\033[38;5;148m--." \
+  "\033[38;5;128m| \033[38;5;129m |  \033[38;5;93m|  \033[38;5;99m|| \033[38;5;63m -_\033[38;5;69m_|| \033[38;5;33m _ \033[38;5;39m ||\033[38;5;38m__  \033[38;5;44m   \033[38;5;43m||  \033[38;5;49m-__\033[38;5;48m|  \033[38;5;84m _| \033[38;5;83m | \033[38;5;119m | \033[38;5;118m -_\033[38;5;154m_|  \033[38;5;148m _|" \
+  "\033[38;5;128m|_\033[38;5;129m___\033[38;5;93m___\033[38;5;99m_||_\033[38;5;63m___\033[38;5;69m_||\033[38;5;33m____\033[38;5;39m_||\033[38;5;38m___\033[38;5;44m____\033[38;5;43m||_\033[38;5;49m___\033[38;5;48m_|__\033[38;5;84m|  \033[38;5;83m\__\033[38;5;119m_/|_\033[38;5;118m___\033[38;5;154m_|_\033[38;5;148m_|  " \
+  "\033[0m"
 }
 
 # Display the uptime
@@ -130,19 +130,19 @@ generate_progress_bar() {
   printf "\033[0m]\n\n"
 }
 
+# Write a function to check if fail2ban is installed and running.
+# If it is, display the number of IP's banned.
+# If it isn't, display a message saying it isn't installed.
 get_fail2ban_status() {
-  fail2ban_status=$(systemctl status fail2ban | grep Active | awk '{print $2}')
-  if [ "$fail2ban_status" == "active" ]; then
-    printf "Fail2ban: ${color}Online${reset_color}\n"
+  if [ -n "$(command -v fail2ban-client)" ]; then
+    fail2ban_status=$(sudo fail2ban-client status | grep "Status\|Jail list" | sed 's/[[:space:]]//g')
+    read -r status jail_list <<< "$fail2ban_status"
+    printf "Fail2Ban Status: $status\n"
   else
-    printf "Fail2ban: ${color}Offline${reset_color}\n"
+    printf "Fail2Ban: Not installed.\n"
   fi
 }
 
-get_fail2ban_count() {
-  fail2ban_count=$(fail2ban-client status | grep "Number of jail:" | awk '{print $5}')
-  printf "IP's jailed: ${green}$fail2ban_count${reset_color}\n"
-}
 
 # Display the MOTD
 clear
@@ -152,7 +152,6 @@ get_uptime
 get_cpu_usage
 get_ram_usage
 get_fail2ban_status
-get_fail2ban_count
 get_disk_space
 # get_check_updates
 # get_check_reboot
