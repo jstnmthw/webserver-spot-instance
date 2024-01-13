@@ -130,9 +130,7 @@ generate_progress_bar() {
   printf "\033[0m]\n\n"
 }
 
-# Write a function to check if fail2ban is installed and running.
-# If it is, display the number of IP's banned.
-# If it isn't, display a message saying it isn't installed.
+# Display the Fail2Ban status
 get_fail2ban_status() {
   if [ -n "$(command -v fail2ban-client)" ]; then
     fail2ban_status=$(sudo fail2ban-client status | grep "Status\|Jail list" | sed 's/[[:space:]]//g')
