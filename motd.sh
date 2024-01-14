@@ -3,7 +3,7 @@
 # Color codes
 red="\033[0;31m"
 yellow="\033[38;5;154m"
-green="\033[38;5;69m"
+green="\033[38;5;83m"
 blue="\033[1;34m"
 purple="\033[1;35m"
 violet="\033[0;35m"
@@ -138,7 +138,7 @@ get_fail2ban_status() {
       printf "Ban Count.....: $(sudo fail2ban-client status | grep -oP 'Number of jail:\s*\K\d+')\n"
     fi
   else
-    printf "Fail2ban......:: Not installed.\n"
+    printf "Fail2ban......: not installed\n"
   fi
 }
 
@@ -147,7 +147,7 @@ get_ufw_status() {
     ufw_status=$(sudo ufw status | grep -oP 'Status:\s*\K\w+')
     printf "Firewall......: $ufw_status\n"
   else
-    printf "Firewall......: Not installed.\n"
+    printf "Firewall......: not installed.\n"
   fi
 }
 
