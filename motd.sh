@@ -50,7 +50,7 @@ get_uptime() {
 # Calculate the CPU usage
 get_cpu_usage() {
   cpu_usage=$(top -b -n1 | grep "%Cpu(s)" | awk '{print $2}')
-  printf "CPU Usage: $cpu_usage%%\n"
+  printf "CPU Usage.....: $cpu_usage%%\n"
 }
 
 # Check for updates
@@ -82,7 +82,7 @@ get_check_reboot() {
 get_ram_usage() {
   ram_info=$(free -m | awk '/Mem/ {print $2, $3}')
   read -r total_ram used_ram <<< "$ram_info"
-  printf "RAM Usage: $used_ram MB / $total_ram MB\n"
+  printf "RAM Usage.....: $used_ram MB / $total_ram MB\n"
 }
 
 # Display a text-based progress bar for disk space
@@ -106,9 +106,7 @@ generate_progress_bar() {
   filled_blocks=$((current_value * total_blocks / total_value))
   empty_blocks=$((total_blocks - filled_blocks))
 
-  # Check percentage, if under 50% set color to green, 
-  # if under 75% set color to yellow, 
-  # else set color to red.
+  # Color the blocks according to the percentage
   if [ "$percentage" -lt 75 ]; then
     color_code=$green
   elif [ "$percentage" -lt 90 ]; then
@@ -133,14 +131,25 @@ generate_progress_bar() {
 # Display the Fail2Ban status
 get_fail2ban_status() {
   if [ -n "$(command -v fail2ban-client)" ]; then
-    fail2ban_status=$(sudo fail2ban-client status | grep "Status\|Jail list" | sed 's/[[:space:]]//g')
+    fail2ban_status=$(sudo systemctl is-active fail2ban.service)
     read -r status jail_list <<< "$fail2ban_status"
-    printf "Fail2Ban Status: $status\n"
+    printf "Fail2ban......: $status\n"
+    if [ "$status" = "active" ]; then
+      printf "Ban Count.....: $(sudo fail2ban-client status | grep -oP 'Number of jail:\s*\K\d+')\n"
+    fi
   else
-    printf "Fail2Ban: Not installed.\n"
+    printf "Fail2ban......:: Not installed.\n"
   fi
 }
 
+get_ufw_status() {
+  if [ -n "$(command -v ufw)" ]; then
+    ufw_status=$(sudo ufw status | grep -oP 'Status:\s*\K\w+')
+    printf "Firewall......: $ufw_status\n"
+  else
+    printf "Firewall......: Not installed.\n"
+  fi
+}
 
 # Display the MOTD
 clear
@@ -149,7 +158,6 @@ get_ascii_header
 get_uptime
 get_cpu_usage
 get_ram_usage
+get_ufw_status
 get_fail2ban_status
 get_disk_space
-# get_check_updates
-# get_check_reboot
