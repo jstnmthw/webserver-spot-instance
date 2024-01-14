@@ -87,16 +87,16 @@ get_ram_usage() {
 
   # Convert RAM usage to GB if needed
   if [ "$used_ram" -gt 1024 ]; then
-    used_ram=$((used_ram / 1024))" GB"
+    used_ram=$(awk "BEGIN {printf \"%.2f\", $used_ram / 1024}")" GB"
   else
-    used_ram="$used_ram "MB
+    used_ram="$used_ram MB"
   fi
 
   # Convert total RAM to GB if needed
   if [ "$total_ram" -gt 1024 ]; then
-    total_ram=$((total_ram / 1024))" GB"
+    total_ram=$(awk "BEGIN {printf \"%.2f\", $total_ram / 1024}")" GB"
   else
-    total_ram="$total_ram "MB
+    total_ram="$total_ram MB"
   fi
 
   printf "RAM Usage.....: $used_ram / $total_ram\n"
