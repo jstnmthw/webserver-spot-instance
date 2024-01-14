@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Color codes
-red="\033[0;31m"
+red="\033[38;5;203m"
 yellow="\033[38;5;154m"
 green="\033[38;5;83m"
+orange="\033[38;5;209m"
+lime="\033[38;5;48m"
 blue="\033[1;34m"
 purple="\033[1;35m"
 violet="\033[0;35m"
@@ -82,7 +84,22 @@ get_check_reboot() {
 get_ram_usage() {
   ram_info=$(free -m | awk '/Mem/ {print $2, $3}')
   read -r total_ram used_ram <<< "$ram_info"
-  printf "RAM Usage.....: $used_ram MB / $total_ram MB\n"
+
+  # Convert RAM usage to GB if needed
+  if [ "$used_ram" -gt 1024 ]; then
+    used_ram=$((used_ram / 1024))" GB"
+  else
+    used_ram="$used_ram "MB
+  fi
+
+  # Convert total RAM to GB if needed
+  if [ "$total_ram" -gt 1024 ]; then
+    total_ram=$((total_ram / 1024))" GB"
+  else
+    total_ram="$total_ram "MB
+  fi
+
+  printf "RAM Usage.....: $used_ram / $total_ram\n"
 }
 
 # Display a text-based progress bar for disk space
@@ -133,21 +150,36 @@ get_fail2ban_status() {
   if [ -n "$(command -v fail2ban-client)" ]; then
     fail2ban_status=$(sudo systemctl is-active fail2ban.service)
     read -r status jail_list <<< "$fail2ban_status"
-    printf "Fail2ban......: $status\n"
+
+    # Checks if Fail2Ban is running and change $status color accordingly
+    status_txt="${red}$status${reset_color}"
+    if [ "$status" = "active" ]; then
+      status_txt="${green}$status${reset_color}"
+    fi
+
+    printf "Fail2ban......: $status_txt\n"
     if [ "$status" = "active" ]; then
       printf "Ban Count.....: $(sudo fail2ban-client status | grep -oP 'Number of jail:\s*\K\d+')\n"
     fi
   else
-    printf "Fail2ban......: not installed\n"
+    printf "Fail2ban......: ${orange}not installed${reset_color}\n"
   fi
 }
 
 get_ufw_status() {
   if [ -n "$(command -v ufw)" ]; then
     ufw_status=$(sudo ufw status | grep -oP 'Status:\s*\K\w+')
+
+    # Checks if UFW is running and change $ufw_status color accordingly
+    if [ "$ufw_status" = "active" ]; then
+      ufw_status="${green}$ufw_status${reset_color}"
+    else
+      ufw_status="${red}$ufw_status${reset_color}"
+    fi
+
     printf "Firewall......: $ufw_status\n"
   else
-    printf "Firewall......: not installed.\n"
+    printf "Firewall......: ${red}not installed${reset_color}\n"
   fi
 }
 
