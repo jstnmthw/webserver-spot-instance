@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# If arguments 1 and 2 are not provided, exit with a message
+# If arguments 1, 2 & 3 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
   echo "Usage: $0 <username> <aws_bucket_name> <aws_region>"
   exit 1;
@@ -82,12 +82,13 @@ sudo ufw --force enable
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo sed -i 's/bantime  = 10m/bantime  = 1h/g' /etc/fail2ban/jail.local
-sudo sed -i 's/findtime  = 10m/findtime  = 1h/g' /etc/fail2ban/jail.local
+sudo sed -i 's/bantime = 10m/bantime = 1h/g' /etc/fail2ban/jail.local
+sudo sed -i 's/findtime = 10m/findtime = 1h/g' /etc/fail2ban/jail.local
 sudo sed -i 's/maxretry = 5/maxretry = 3/g' /etc/fail2ban/jail.local
+sudo systemctl enable fail2ban
 sudo systemctl start fail2ban
 
-# Download and install custom motd from the repo and copy it to /etc/update-motd.d/99-motd
+# Download and install custom motd from the repo and copy it to /etc/update-motd.d/00-motd
 sudo chmod -x /etc/update-motd.d/*
 sudo rm /etc/update-motd.d/*landscape*
 sudo chmod +x /etc/update-motd.d/*updates-available
@@ -100,3 +101,6 @@ sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
 if [ -n "$(command -v yum)" ]; then  
   sudo update-motd
 fi
+
+# Execute git script
+sudo ./git.sh $username
