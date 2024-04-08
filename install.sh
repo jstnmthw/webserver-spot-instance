@@ -72,6 +72,9 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
+# Generate a new SSH key pair
+ssh-keygen -t rsa -b 4096 -C "webserver" -f /home/$username/.ssh/id_rsa -N ""
+
 # Setup ufw firewall with deny rules and then allow rules
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
