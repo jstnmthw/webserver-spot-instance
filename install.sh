@@ -9,6 +9,9 @@ fi
 # Username
 username=$1
 
+# Type (webserver or gameserver)
+type=$2
+
 # Default user
 default_user="root"
 
@@ -74,6 +77,8 @@ aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elasti
 
 # Generate a new SSH key pair
 ssh-keygen -t rsa -b 4096 -C "webserver" -f /home/$username/.ssh/id_rsa -N ""
+eval "$(ssh-agent -s)"
+ssh-add /home/$username/.ssh/id_rsa
 
 # Setup ufw firewall with deny rules and then allow rules
 sudo ufw default deny incoming
