@@ -88,6 +88,13 @@ sudo ufw allow http
 sudo ufw allow https
 sudo ufw --force enable
 
+# If gameserver open port 27015-27030
+if [ "$type" == "gameserver" ]; then
+  sudo ufw allow 27015:27030/udp
+  sudo ufw allow 27015:27030/tcp
+  sudo apt-get install make -y
+fi
+
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 sudo sed -i 's/bantime = 10m/bantime = 1h/g' /etc/fail2ban/jail.local
