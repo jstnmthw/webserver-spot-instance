@@ -103,6 +103,7 @@ get_ram_usage() {
 }
 
 # Display a text-based progress bar for disk space
+# TODO: Should be a better way to find the main disk drive than ignoring tons of disk names.
 get_disk_space() {
   printf "\n%-20s %-10s %-10s %-10s %-10s %-10s\n" "Filesystems" "Size" "Used" "Avail" "Use%" "Mounted"
   df -BG | awk 'NR>1 {print $1, $2, $3, $4, $5, $6}' | grep -vE 'tmpfs|devtmpfs|boot|mnt|run|init|docker' | while read -r filesystem size used avail use mounted; do
@@ -159,7 +160,7 @@ get_fail2ban_status() {
 
     printf "Fail2ban......: $status_txt\n"
     if [ "$status" = "active" ]; then
-      printf "Ban Count.....: $(sudo fail2ban-client status | grep -oP 'Number of jail:\s*\K\d+')\n"
+      printf "Ban Count.....: $(sudo fail2ban-client status sshd | grep -oP 'Total banned:\s*\K\d+')\n"
     fi
   else
     printf "Fail2ban......: ${orange}not installed${reset_color}\n"
