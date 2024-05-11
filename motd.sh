@@ -43,6 +43,18 @@ get_ascii_header() {
   "\033[0m"
 }
 
+get_gameserver_ascii_header() {
+  printf "%b\n" \
+  "${lime}" \
+  "   ______                    _____                          " \
+  "  / ____/___ _____ ___  ___ / ___/___  ______   _____  _____" \
+  " / / __/ __ \`/ __ \`__ \/ _ \\\\\\__ \/ _ \/ ___/ | / / _ \/ ___/" \
+  "/ /_/ / /_/ / / / / / /  __/__/ /  __/ /   | |/ /  __/ /    " \
+  "\____/\__,_/_/ /_/ /_/\___/____/\___/_/    |___/\___/_/     " \
+  "                                         ${dark_grey}version 1.0.0" \
+  "${reset_color}"
+}
+
 # Display the uptime
 get_uptime() {
   uptime=$(uptime -p | sed -e 's/up //g')
@@ -187,7 +199,8 @@ get_ufw_status() {
 # Display the MOTD
 clear
 get_os
-get_ascii_header
+# get_ascii_header
+get_gameserver_ascii_header
 get_uptime
 get_cpu_usage
 get_ram_usage
