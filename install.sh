@@ -35,15 +35,15 @@ fi
 
 # Set the hostname
 if [ -n "$(command -v hostnamectl)" ]; then
-  if [ "$server_type" === 1 ]; then
+  if [ "$server_type" == 1 ]; then
     sudo hostnamectl set-hostname webserver
-  elif [ "$server_type" === 2 || "$server_type" === 3 ]; then
+  elif [ "$server_type" == 2 ] || [ "$server_type" == 3 ]; then
     sudo hostnamectl set-hostname gameserver
   else
     sudo hostnamectl set-hostname server
   fi
 else
-  echo "No hostnamectl command found. Continuing..."
+  echo "No hostnamectl command found. Skipping..."
 fi
 
 # Update the instance
@@ -56,28 +56,33 @@ sudo service docker start
 # Install services
 sudo $package_manager install git awscli iftop fail2ban -y
 
-if [ "$sever_type" === 2 ] || [ "$seerver_type" === 3 ]; then
-  sudo apt-get install make -y
+if [ "$sever_type" == 2 ] || [ "$seerver_type" == 3 ]; then
+  sudo $package_manager install make -y
 fi
 
-# Install user and add to docker group
-useradd -m -s /bin/bash $username
-sudo usermod -a -G docker $username
+# Check if user exists, if not create it, copy SSH key and add to docker group
+if id "$username" >/dev/null 2>&1; then
+  echo "User already exists. Skipping..."
+else
+  # Install user and add to docker group
+  useradd -m -s /bin/bash $username
+  sudo usermod -a -G docker $username
 
-# Copy the SSH authorized key from the default user to the newly created user
-mkdir -p /home/$username/.ssh
-cp /home/$default_user/.ssh/authorized_keys /home/$username/.ssh/
-chown -R $username:$username /home/$username/.ssh
+  # Copy the SSH authorized key from the default user to the newly created user
+  mkdir -p /home/$username/.ssh
+  cp /home/$default_user/.ssh/authorized_keys /home/$username/.ssh/
+  chown -R $username:$username /home/$username/.ssh
 
-# Add the new user to the sudoers group (optional, for administrative privileges)
-usermod -aG sudo $username
-cp /etc/skel/.bashrc /home/$username/.bashrc
-echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
+  # Add the new user to the sudoers group (optional, for administrative privileges)
+  usermod -aG sudo $username
+  cp /etc/skel/.bashrc /home/$username/.bashrc
+  echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
-# Customize the shell prompt to display the username and hostname
-echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
+  # Customize the shell prompt to display the username and hostname
+  echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
+fi
 
-# Restart the SSH service for changes to take effect
+# Set sshd to listen on port 666
 sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
 systemctl restart ssh
 
@@ -88,15 +93,15 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # Associate Elastic IP
 aws configure set default.region $aws_region
-aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_url}/elastic-ip.txt - | tr -d '\r')
+aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
 aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
 # Generate a new SSH key pair
-ssh-keygen -t rsa -b 4096 -C "webserver" -f /home/$username/.ssh/id_rsa -N ""
-eval "$(ssh-agent -s)"
-ssh-add /home/$username/.ssh/id_rsa
+# ssh-keygen -t rsa -b 4096 -C "webserver" -f /home/$username/.ssh/id_rsa -N ""
+# eval "$(ssh-agent -s)"
+# ssh-add /home/$username/.ssh/id_rsa
 
 # Setup ufw firewall with deny rules and then allow rules
 sudo ufw default deny incoming
@@ -106,7 +111,7 @@ sudo ufw allow http
 sudo ufw allow https
 
 # If gameserver open srcds ports 27015-27030
-if [ "$sever_type" === 2 ] || [ "$seerver_type" === 3 ]; then
+if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo ufw allow 27015:27030/udp
   sudo ufw allow 27015:27030/tcp
 fi
@@ -137,11 +142,11 @@ if [ -n "$(command -v yum)" ]; then
 fi
 
 # Execute webserver setup script
-if [ "$sever_type" === 1 ]; then
+if [ "$sever_type" == 1 ]; then
   sudo ./site.sh $username
 fi
 
 # Execute gameserver setup script
-if [ "$sever_type" === 2 ] || [ "$seerver_type" === 3 ]; then
+if [ "$sever_type" == 2 ] || [ "$seerver_type" == 3 ]; then
   sudo ./gameserver.sh
 fi
