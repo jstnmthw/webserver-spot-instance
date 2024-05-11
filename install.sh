@@ -133,9 +133,19 @@ sudo chmod -x /etc/update-motd.d/*
 sudo chmod +x /etc/update-motd.d/*updates-available
 sudo chmod +x /etc/update-motd.d/*reboot-required
 
+echo "Setting up the MOTD...\n"
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
 chmod +x /tmp/motd.sh
 sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
+echo "Done.\n"
+
+echo "Disabling ESM update motd...\n"
+sudo sed -Ezi.orig \
+  -e 's/(def _output_esm_service_status.outstream, have_esm_service, service_type.:\n)/\1    return\n/' \
+  -e 's/(def _output_esm_package_alert.*?\n.*?\n.:\n)/\1    return\n/' \
+  /usr/lib/update-notifier/apt_check.py
+sudo /usr/lib/update-notifier/update-motd-updates-available --force
+echo "Done.\n"
 
 if [ -n "$(command -v yum)" ]; then  
   sudo update-motd
