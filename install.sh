@@ -15,7 +15,7 @@ aws_bucket_name=$2
 # AWS region
 aws_region=$3
 
-# Type - webserver,gameserver or both
+# Type - webserver, gameserver or both
 server_type=$4
 
 # Default user
