@@ -159,4 +159,9 @@ fi
 # Execute gameserver setup script
 if [ "$sever_type" == 2 ] || [ "$seerver_type" == 3 ]; then
   sudo ./gameserver.sh
+  echo "Downloading gameserver setup script...\n"
+  curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/gameserver.sh > /tmp/gameserver.sh
+  echo "Done.\n"
+  chmod +x /tmp/gameserver.sh
+  sudo ./tmp/gameserver.sh
 fi
