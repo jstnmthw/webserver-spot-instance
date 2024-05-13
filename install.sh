@@ -133,19 +133,19 @@ sudo rm /etc/update-motd.d/*landscape*
 sudo chmod +x /etc/update-motd.d/*updates-available
 sudo chmod +x /etc/update-motd.d/*reboot-required
 
-echo "Setting up the MOTD...\n"
+echo "Setting up the MOTD..."
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
 chmod +x /tmp/motd.sh
 sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
-echo "Done.\n"
+echo "Done."
 
-echo "Disabling ESM update motd...\n"
+echo "Disabling ESM update motd..."
 sudo sed -Ezi.orig \
   -e 's/(def _output_esm_service_status.outstream, have_esm_service, service_type.:\n)/\1    return\n/' \
   -e 's/(def _output_esm_package_alert.*?\n.*?\n.:\n)/\1    return\n/' \
   /usr/lib/update-notifier/apt_check.py
 sudo /usr/lib/update-notifier/update-motd-updates-available --force
-echo "Done.\n"
+echo "Done."
 
 if [ -n "$(command -v yum)" ]; then  
   sudo update-motd
@@ -158,10 +158,9 @@ fi
 
 # Execute gameserver setup script
 if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
-  sudo ./gameserver.sh
-  echo "Downloading gameserver setup script...\n"
+  echo "Downloading gameserver setup script..."
   curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/gameserver.sh > /tmp/gameserver.sh
-  echo "Done.\n"
+  echo "Done."
   chmod +x /tmp/gameserver.sh
   sudo ./tmp/gameserver.sh
 fi
