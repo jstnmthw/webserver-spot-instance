@@ -129,7 +129,7 @@ sudo systemctl start fail2ban
 
 # Download and install custom motd from the repo and copy it to /etc/update-motd.d/00-motd
 sudo chmod -x /etc/update-motd.d/*
-# sudo rm /etc/update-motd.d/*landscape* - TODO: See if this actually stays removed
+sudo rm /etc/update-motd.d/*landscape*
 sudo chmod +x /etc/update-motd.d/*updates-available
 sudo chmod +x /etc/update-motd.d/*reboot-required
 
