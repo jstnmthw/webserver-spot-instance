@@ -56,7 +56,7 @@ sudo service docker start
 # Install services
 sudo $package_manager install git awscli iftop fail2ban -y
 
-if [ "$sever_type" == 2 ] || [ "$seerver_type" == 3 ]; then
+if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo $package_manager install make -y
 fi
 
