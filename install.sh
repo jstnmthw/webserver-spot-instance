@@ -157,7 +157,7 @@ if [ "$sever_type" == 1 ]; then
 fi
 
 # Execute gameserver setup script
-if [ "$sever_type" == 2 ] || [ "$seerver_type" == 3 ]; then
+if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo ./gameserver.sh
   echo "Downloading gameserver setup script...\n"
   curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/gameserver.sh > /tmp/gameserver.sh
