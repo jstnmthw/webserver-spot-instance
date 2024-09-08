@@ -112,9 +112,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Setup ufw firewall with deny rules and then allow rules
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow 666
-sudo ufw allow http
-sudo ufw allow https
+sudo ufw allow 666/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
 
 # If gameserver open srcds ports 27015-27030
 if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
