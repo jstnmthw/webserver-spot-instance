@@ -177,9 +177,9 @@ get_fail2ban_status() {
     read -r status jail_list <<< "$fail2ban_status"
 
     # Checks if Fail2Ban is running and change $status color accordingly
-    status_txt="${red}$status${reset_color}"
+    status_txt="${red}● $status${reset_color}"
     if [ "$status" = "active" ]; then
-      status_txt="${green}$status${reset_color}"
+      status_txt="${green}● ${dark_grey}($status)${reset_color}"
     fi
 
     printf "Fail2ban......: $status_txt\n"
@@ -197,9 +197,9 @@ get_ufw_status() {
 
     # Checks if UFW is running and change $ufw_status color accordingly
     if [ "$ufw_status" = "active" ]; then
-      ufw_status="${green}$ufw_status${reset_color}"
+      ufw_status="${green}● $ufw_status${reset_color}"
     else
-      ufw_status="${red}$ufw_status${reset_color}"
+      ufw_status="${red}● $ufw_status${reset_color}"
     fi
 
     printf "Firewall......: $ufw_status\n"
