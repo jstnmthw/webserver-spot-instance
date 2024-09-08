@@ -121,6 +121,7 @@ fi
 
 # Enable firewall
 sudo ufw --force enable
+sudo ufw reload
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
