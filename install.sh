@@ -158,21 +158,7 @@ fi
 
 # Set sshd to listen on port 666
 sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
-
-# Wait for SSH service to be fully up
-while ! systemctl is-active --quiet ssh; do
-    echo "Waiting for SSH service to be active..."
-    sleep 5
-done
-
 sudo systemctl restart ssh
-
-# Verify SSH service status
-if systemctl is-active --quiet ssh; then
-    echo "SSH service restarted successfully."
-else
-    echo "Failed to restart SSH service."
-fi
 
 # Associate Elastic IP
 aws configure set default.region $aws_region
