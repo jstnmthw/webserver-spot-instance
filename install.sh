@@ -135,7 +135,7 @@ sudo chmod +x /etc/update-motd.d/*reboot-required
 
 echo "Setting up the MOTD..."
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
-chmod +x /tmp/motd.sh
+chmod +x /tmp/motd.sh $server_type
 sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
 echo "Done."
 
@@ -153,7 +153,8 @@ fi
 
 # Execute webserver setup script
 if [ "$sever_type" == 1 ]; then
-  sudo ./site.sh $username
+  # TODO: Implement webserver setup script
+  # sudo ./site.sh $username
 fi
 
 # Execute gameserver setup script

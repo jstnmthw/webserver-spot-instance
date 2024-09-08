@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# If arguments 1, 2 & 3 are not provided, exit with a message
+if [ -z "$1" ]; then
+  echo "Usage: $0 <MOTD Type Required>"
+  exit 1;
+fi
+
+# MOTD Type
+motd=$1
+
 # Color codes
 red="\033[38;5;203m"
 yellow="\033[38;5;154m"
@@ -41,6 +50,17 @@ get_ascii_header() {
   "\033[38;5;128m| \033[38;5;129m |  \033[38;5;93m|  \033[38;5;99m|| \033[38;5;63m -_\033[38;5;69m_|| \033[38;5;33m _ \033[38;5;39m ||\033[38;5;38m__  \033[38;5;44m   \033[38;5;43m||  \033[38;5;49m-__\033[38;5;48m|  \033[38;5;84m _| \033[38;5;83m | \033[38;5;119m | \033[38;5;118m -_\033[38;5;154m_|  \033[38;5;148m _|" \
   "\033[38;5;128m|_\033[38;5;129m___\033[38;5;93m___\033[38;5;99m_||_\033[38;5;63m___\033[38;5;69m_||\033[38;5;33m____\033[38;5;39m_||\033[38;5;38m___\033[38;5;44m____\033[38;5;43m||_\033[38;5;49m___\033[38;5;48m_|__\033[38;5;84m|  \033[38;5;83m\__\033[38;5;119m_/|_\033[38;5;118m___\033[38;5;154m_|_\033[38;5;148m_|  " \
   "\033[0m"
+}
+
+get_webserver_ascii_header() {
+  printf "%b\n" \
+        "${lime}" \
+        " _____ _____ _____ _____ _____ _____ " \
+        "|   __|   __| __  |  |  |   __| __  |" \
+        "|__   |   __|    -|  |  |   __|    -|" \
+        "|_____|_____|__|__|\___/|_____|__|__|" \
+        "${dark_grey}verion ${light_grey}1.1.0" \
+        "${reset_color}"
 }
 
 get_gameserver_ascii_header() {
@@ -199,8 +219,13 @@ get_ufw_status() {
 # Display the MOTD
 clear
 get_os
-# get_ascii_header
-get_gameserver_ascii_header
+
+if [ "$motd" == 1 ]; then
+  get_webserver_ascii_header
+elif [ "$motd" == 2 ]; then
+  get_gameserver_ascii_header
+fi
+
 get_uptime
 get_cpu_usage
 get_ram_usage
