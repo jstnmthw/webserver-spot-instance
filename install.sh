@@ -82,12 +82,13 @@ else
   echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
   # Customize the shell prompt to display the username and hostname
-  echo 'PS1="\u@\h:\w\$ "' >> /home/$username/.bashrc
+  # Using neon green to violet gradient for the username and hostname
+  echo "PS1=\"\[\033[38;5;48m\]\u\[\033[38;5;49m\]@\[\033[38;5;50m\]\h\[\033[38;5;51m\]:\[\033[38;5;52m\]\w\[\033[38;5;53m\]\\$ \[\033[0m\]\"" >> /home/$username/.bashrc
 fi
 
 # Set sshd to listen on port 666
 sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
-systemctl restart ssh
+sudo systemctl restart ssh
 
 # Install docker-compose
 docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
