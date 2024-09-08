@@ -123,7 +123,7 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
 fi
 
 # Enable firewall
-sudo ufw --force enable
+sudo ufw enable
 sudo ufw reload
 
 # Setup fail2ban
