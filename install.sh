@@ -94,15 +94,15 @@ docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/rel
 sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Associate Elastic IP in a subshell with a delay
-(
-  sleep 60
-  aws configure set default.region $aws_region
-  aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
-  aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
-  aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
-  aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
-) &
+# # Associate Elastic IP in a subshell with a delay
+# (
+#   sleep 60
+#   aws configure set default.region $aws_region
+#   aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
+#   aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
+#   aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
+#   aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
+# ) &
 
 # Generate a new SSH key pair
 # ssh-keygen -t rsa -b 4096 -C "webserver" -f /home/$username/.ssh/id_rsa -N ""
@@ -175,3 +175,10 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   chmod +x /tmp/gameserver.sh
   sudo ./tmp/gameserver.sh
 fi
+
+# Associate Elastic IP
+aws configure set default.region $aws_region
+aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
+aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
+aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
+aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
