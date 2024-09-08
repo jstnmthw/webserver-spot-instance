@@ -158,13 +158,6 @@ fi
 
 # Set sshd to listen on port 666
 sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
-
-# Wait for SSH service to be fully up
-while ! systemctl is-active --quiet ssh; do
-    echo "Waiting for SSH service to be active..."
-    sleep 1
-done
-
 sudo systemctl enable ssh
 sudo systemctl restart ssh
 
