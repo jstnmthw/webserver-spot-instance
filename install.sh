@@ -110,9 +110,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 # ssh-add /home/$username/.ssh/id_rsa
 
 # Setup ufw firewall with deny rules and then allow rules
-sudo ufw default deny incoming
 sudo ufw default allow outgoing
+sudo ufw default deny incoming
+
 sudo ufw allow 666/tcp
+sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 
@@ -123,8 +125,9 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
 fi
 
 # Enable firewall
-sudo ufw enable
+sudo ufw enable -y --force
 sudo ufw reload
+sudo systemctl restart ufw
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
