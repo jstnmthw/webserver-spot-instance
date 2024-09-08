@@ -3,15 +3,16 @@
 # Color codes
 red="\033[38;5;203m"
 yellow="\033[38;5;154m"
-green="\033[38;5;83m"
 orange="\033[38;5;209m"
-lime="\033[38;5;48m"
 blue="\033[1;34m"
 purple="\033[1;35m"
 violet="\033[0;35m"
 cyan="\033[1;36m"
 white="\033[1;37m"
 bold="\033[1m"
+
+green="\033[38;5;83m"
+lime="\033[38;5;48m"
 dark_grey="\033[1;30m"
 
 # Reset color
