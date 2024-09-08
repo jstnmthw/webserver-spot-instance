@@ -129,7 +129,7 @@ get_ram_usage() {
 # TODO: Should be a better way to find the main disk drive than ignoring tons of disk names.
 get_disk_space() {
   printf "\n%-20s %-10s %-10s %-10s %-10s %-10s\n" "Filesystems" "Size" "Used" "Avail" "Use%" "Mounted"
-  df -BG | awk 'NR>1 {print $1, $2, $3, $4, $5, $6}' | grep -vE 'tmpfs|devtmpfs|boot|mnt|run|init|docker' | while read -r filesystem size used avail use mounted; do
+  df -BG | awk 'NR>1 {print $1, $2, $3, $4, $5, $6}' | grep -vE 'tmpfs|devtmpfs|boot|mnt|run|init|docker|efivarfs' | while read -r filesystem size used avail use mounted; do
     printf "%-20s %-10s %-10s %-10s %-10s %-10s\n" "$filesystem" "$size" "$used" "$avail" "$use" "$mounted"
     used_space=${used%G}
     total_space=${size%G}
