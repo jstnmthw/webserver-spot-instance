@@ -152,10 +152,10 @@ if [ -n "$(command -v yum)" ]; then
 fi
 
 # Execute webserver setup script
-if [ "$sever_type" == 1 ]; then
+# if [ "$sever_type" == 1 ]; then
   # TODO: Implement webserver setup script
   # sudo ./site.sh $username
-fi
+# fi
 
 # Execute gameserver setup script
 if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
