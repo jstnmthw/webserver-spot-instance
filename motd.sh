@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# If arguments 1, 2 & 3 are not provided, exit with a message
-if [ -z "$1" ]; then
-  echo "Usage: $0 <MOTD Type Required>"
-  exit 1;
-fi
-
-# MOTD Type
-motd=$1
-
 # Color codes
 red="\033[38;5;203m"
 yellow="\033[38;5;154m"
@@ -219,13 +210,7 @@ get_ufw_status() {
 # Display the MOTD
 clear
 get_os
-
-if [ "$motd" == 1 ]; then
-  get_webserver_ascii_header
-elif [ "$motd" == 2 ]; then
-  get_gameserver_ascii_header
-fi
-
+get_webserver_ascii_header
 get_uptime
 get_cpu_usage
 get_ram_usage

@@ -135,7 +135,7 @@ sudo chmod +x /etc/update-motd.d/*reboot-required
 
 echo "Setting up the MOTD..."
 curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/motd.sh > /tmp/motd.sh
-chmod +x /tmp/motd.sh $server_type
+chmod +x /tmp/motd.sh
 sudo mv /tmp/motd.sh /etc/update-motd.d/00-motd
 echo "Done."
 
