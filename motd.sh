@@ -177,7 +177,7 @@ get_fail2ban_status() {
     read -r status jail_list <<< "$fail2ban_status"
 
     # Checks if Fail2Ban is running and change $status color accordingly
-    status_txt="${red}● $status${reset_color}"
+    status_txt="${red}● ${dark_grey}($status)${reset_color}"
     if [ "$status" = "active" ]; then
       status_txt="${green}● ${dark_grey}($status)${reset_color}"
     fi
@@ -187,7 +187,7 @@ get_fail2ban_status() {
       printf "Ban Count.....: $(sudo fail2ban-client status sshd | grep -oP 'Total banned:\s*\K\d+')\n"
     fi
   else
-    printf "Fail2ban......: ${orange}not installed${reset_color}\n"
+    printf "Fail2ban......: ${orange}Not found${reset_color}\n"
   fi
 }
 
@@ -197,14 +197,14 @@ get_ufw_status() {
 
     # Checks if UFW is running and change $ufw_status color accordingly
     if [ "$ufw_status" = "active" ]; then
-      ufw_status="${green}● $ufw_status${reset_color}"
+      ufw_status="${green}● ${dark_grey}($ufw_status)${reset_color}"
     else
-      ufw_status="${red}● $ufw_status${reset_color}"
+      ufw_status="${red}● ${dark_grey}($ufw_status)${reset_color}"
     fi
 
     printf "Firewall......: $ufw_status\n"
   else
-    printf "Firewall......: ${red}not installed${reset_color}\n"
+    printf "Firewall......: ${red}Not found${reset_color}\n"
   fi
 }
 
