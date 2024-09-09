@@ -83,7 +83,7 @@ else
 
   # Customize the shell prompt to display the username and hostname
   # Using neon green to violet gradient for the username and hostname
-  echo "PS1=\"\[\033[1;30m\]\u\[\033[38;5;83m\]@\[\033[1;30m\]\h\[\033[1;30m\]:\[\033[38;5;83m\]\w\[\033[38;5;83m\] \\$ \[\033[0m\]\"" >> /home/$username/.bashrc
+  echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[1;30m\]:\w \\$ \033[0m\]\"" >> /home/$username/.bashrc
 fi
 
 # Install docker-compose
