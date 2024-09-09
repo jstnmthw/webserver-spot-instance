@@ -9,11 +9,10 @@ purple="\033[1;35m"
 violet="\033[0;35m"
 cyan="\033[1;36m"
 white="\033[1;37m"
-bold="\033[1m"
-
 green="\033[38;5;83m"
 lime="\033[38;5;48m"
-dark_grey="\033[1;30m"
+dark_gray="\033[1;30m"
+gray="\033[1;30m"
 
 # Reset color
 reset_color="\033[0m"
@@ -31,7 +30,7 @@ fi
 # Display the OS
 get_os() {
   os=$(cat /etc/os-release | grep PRETTY_NAME | cut -d "=" -f 2- | sed 's/"//g')
-  printf "${dark_grey}Welcome to $os \033[0m\n"
+  printf "${dark_gray}Welcome to $os \033[0m\n"
 }
 
 # Display the ASCII header
@@ -51,7 +50,7 @@ get_webserver_ascii_header() {
         "|  | |  |   __| __  |   __|   __| __  |  |  |   __| __  |" \
         "|  | |  |   __| __ -|__   |   __|    -|  |  |   __|    -|" \
         "|_______|_____|_____|_____|_____|__|__|\___/|_____|__|__|" \
-        "${dark_grey}verion ${light_grey}1.1.0" \
+        "${dark_gray}verion ${light_grey}1.1.0" \
         "${reset_color}"
 }
 
@@ -63,7 +62,7 @@ get_gameserver_ascii_header() {
   " / / __/ __ \`/ __ \`__ \/ _ \\\\\\__ \/ _ \/ ___/ | / / _ \/ ___/" \
   "/ /_/ / /_/ / / / / / /  __/__/ /  __/ /   | |/ /  __/ /    " \
   "\____/\__,_/_/ /_/ /_/\___/____/\___/_/    |___/\___/_/     " \
-  "                                         ${dark_grey}version 1.0.0" \
+  "                                         ${dark_gray}version 1.0.0" \
   "${reset_color}"
 }
 
@@ -177,9 +176,9 @@ get_fail2ban_status() {
     read -r status jail_list <<< "$fail2ban_status"
 
     # Checks if Fail2Ban is running and change $status color accordingly
-    status_txt="${red}● ${dark_grey}($status)${reset_color}"
+    status_txt="${red}● ${dark_gray}($status)${reset_color}"
     if [ "$status" = "active" ]; then
-      status_txt="${green}● ${dark_grey}($status)${reset_color}"
+      status_txt="${green}● ${dark_gray}($status)${reset_color}"
     fi
 
     printf "Fail2ban......: $status_txt\n"
@@ -197,9 +196,9 @@ get_ufw_status() {
 
     # Checks if UFW is running and change $ufw_status color accordingly
     if [ "$ufw_status" = "active" ]; then
-      ufw_status="${green}● ${dark_grey}($ufw_status)${reset_color}"
+      ufw_status="${green}● ${dark_gray}($ufw_status)${reset_color}"
     else
-      ufw_status="${red}● ${dark_grey}($ufw_status)${reset_color}"
+      ufw_status="${red}● ${dark_gray}($ufw_status)${reset_color}"
     fi
 
     printf "Firewall......: $ufw_status\n"
