@@ -210,7 +210,8 @@ get_ufw_status() {
 # Display the MOTD
 clear
 get_os
-get_webserver_ascii_header
+# get_webserver_ascii_header
+get_gameserver_ascii_header
 get_uptime
 get_cpu_usage
 get_ram_usage
