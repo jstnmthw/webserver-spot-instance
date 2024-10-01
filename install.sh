@@ -63,6 +63,9 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo $package_manager install make -y
 fi
 
+# Add root user to the docker group
+sudo usermod -aG docker $default_user
+
 # Check if user exists, if not create it, copy SSH key and add to docker group
 if id "$username" >/dev/null 2>&1; then
   echo "User already exists. Skipping..."
