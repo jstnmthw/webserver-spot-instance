@@ -21,6 +21,9 @@ server_type=$4
 # Default user
 default_user="root"
 
+# Hostname color
+hostcolor="PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;48m\]:\[\033[\033[38;5;30m\]\w \033[38;5;48m\]\$ \033[0m\]\""
+
 # Detect apt or yum
 if [ -n "$(command -v yum)" ]; then
   package_manager="yum"
@@ -66,6 +69,9 @@ fi
 # Add root user to the docker group
 sudo usermod -aG docker $default_user
 
+# Customize the shell prompt to display the username and hostname
+echo $hostcolor >> /home/$USER/.bashrc
+
 # Check if user exists, if not create it, copy SSH key and add to docker group
 if id "$username" >/dev/null 2>&1; then
   echo "User already exists. Skipping..."
@@ -85,8 +91,7 @@ else
   echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
   # Customize the shell prompt to display the username and hostname
-  # Using neon green to violet gradient for the username and hostname
-  echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[1;30m\]:\w \\$ \033[0m\]\"" >> /home/$username/.bashrc
+  echo $hostcolor >> /home/$username/.bashrc
 fi
 
 # Install docker-compose
