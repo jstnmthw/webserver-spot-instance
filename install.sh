@@ -107,7 +107,7 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
 fi
 
 # Enable firewall
-sudo ufw enable
+sudo ufw --force enable
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
