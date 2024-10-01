@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# If arguments 1, 2 & 3 are not provided, exit with a message
+# If arguments 1, 2, 3 & 4 are not provided, exit with a message
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
   echo "Usage: $0 <username> <aws_bucket_name> <aws_region> <server_type>"
   exit 1;
