@@ -156,7 +156,8 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   curl -s https://raw.githubusercontent.com/jstnmthw/webserver-spot-instance/master/gameserver.sh > /tmp/gameserver.sh
   echo "Done."
   chmod +x /tmp/gameserver.sh
-  sudo ./tmp/gameserver.sh
+  cd /tmp
+  sudo ./gameserver.sh
 fi
 
 # Set sshd to listen on port 666
