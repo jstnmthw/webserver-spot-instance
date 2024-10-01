@@ -67,7 +67,7 @@ fi
 sudo usermod -aG docker $default_user
 
 # Customize the shell prompt to display the username and hostname
-echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;48m\]:\[\033[\033[38;5;30m\]\w \033[38;5;48m\]\$ \033[0m\]\"" >> /home/$default_user/.bashrc
+echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;48m\]:\[\033[\033[38;5;30m\]\w \033[38;5;48m\]\$ \033[0m\] \"" >> /home/$default_user/.bashrc
 
 # Check if user exists, if not create it, copy SSH key and add to docker group
 if id "$username" >/dev/null 2>&1; then
@@ -88,7 +88,7 @@ else
   echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
   # Customize the shell prompt to display the username and hostname
-  echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;48m\]:\[\033[\033[38;5;30m\]\w \033[38;5;48m\]\$ \033[0m\]\"" >> /home/$username/.bashrc
+  echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;48m\]:\[\033[\033[38;5;30m\]\w \033[38;5;48m\]\$ \033[0m\] \"" >> /home/$username/.bashrc
 fi
 
 # Install docker-compose
@@ -159,7 +159,7 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   echo "Done."
   chmod +x /tmp/gameserver.sh
   cd /tmp
-  sudo ./gameserver.sh
+  sudo ./gameserver.sh $username
 fi
 
 # Set sshd to listen on port 666
