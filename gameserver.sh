@@ -11,8 +11,6 @@ username=$1
 
 su - $username -c "git clone https://github.com/jstnmthw/srcds-autoinstall.git /home/$username/srcds-autoinstall"
 
-su - $Username
-
 cd /home/$username/srcds-autoinstall
 touch .env
 
