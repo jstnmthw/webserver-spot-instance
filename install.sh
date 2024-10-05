@@ -70,11 +70,22 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
+# Setup ufw firewall with deny rules and then allow rules
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+
+sudo ufw allow 666/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Enable firewall
+sudo ufw --force enable
+
 # Add root user to the docker group
 sudo usermod -aG docker $default_user
 
 # Customize the shell prompt to display the username and hostname
-echo 'PS1="\[\033[38;5;48m\]\u\[\033[38;5;42m\]@\[\033[38;5;36m\]\h\[\033[38;5;29m\]:\[\033[38;5;30m\]\w \[\033[0m\]\$ "' >> /home/$USER/.bashrc
+echo 'PS1="\[\033[38;5;48m\]\u\[\033[38;5;42m\]@\[\033[38;5;36m\]\h\[\033[38;5;29m\]:\[\033[38;5;30m\]\w \[\033[0m\]\$ "' >> /home/$default_user/.bashrc
 
 # Check if user exists, if not create it, copy SSH key and add to docker group
 if id "$username" >/dev/null 2>&1; then
@@ -95,7 +106,6 @@ else
   echo "${username} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 
   # Customize the shell prompt to display the username and hostname
-  # echo "PS1=\"\033[38;5;48m\]\u\033[38;5;42m\]@\033[38;5;36m\]\h\033[38;5;29m\]:\[\033[\033[38;5;30m\]\w \033[0m\]\$ \"" >> /home/$username/.bashrc
   echo 'PS1="\[\033[38;5;48m\]\u\[\033[38;5;42m\]@\[\033[38;5;36m\]\h\[\033[38;5;29m\]:\[\033[38;5;30m\]\w \[\033[0m\]\$ "' >> /home/$username/.bashrc
 fi
 
@@ -104,22 +114,11 @@ docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/rel
 sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Setup ufw firewall with deny rules and then allow rules
-sudo ufw default allow outgoing
-sudo ufw default deny incoming
-
-sudo ufw allow 666/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
 # If gameserver open srcds ports 27015-27030
 if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo ufw allow 27015:27030/udp
   sudo ufw allow 27015:27030/tcp
 fi
-
-# Enable firewall
-sudo ufw --force enable
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
