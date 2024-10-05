@@ -48,7 +48,6 @@ fi
 
 # Update the instance
 sudo $package_manager update -y
-sudo $package_manager upgrade -y
 
 # Install Docker
 sudo $package_manager install docker.io -y
@@ -175,5 +174,6 @@ aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --heade
 aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
-# Reboot the instance
+# Upgrade and reboot
+sudo $package_manager upgrade -y
 sudo reboot
