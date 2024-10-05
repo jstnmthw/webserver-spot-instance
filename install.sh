@@ -175,5 +175,4 @@ aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --
 aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
 # Upgrade and reboot
-sudo $package_manager upgrade -y
-sudo reboot
+sudo $package_manager upgrade -y && sudo reboot
