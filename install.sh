@@ -119,6 +119,11 @@ fi
 # Enable firewall
 sudo ufw --force enable
 
+# Set sshd to listen on port 666
+sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
+sudo systemctl enable ssh
+sudo systemctl restart ssh
+
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 sudo sed -i 's/bantime = 12h/bantime = 1h/g' /etc/fail2ban/jail.local
@@ -166,11 +171,6 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   cd /tmp
   sudo ./gameserver.sh $username
 fi
-
-# Set sshd to listen on port 666
-sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
-sudo systemctl enable ssh
-sudo systemctl restart ssh
 
 # Upgrade and reboot
 sudo $package_manager upgrade -y && sudo reboot
