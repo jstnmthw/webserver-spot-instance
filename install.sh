@@ -63,24 +63,6 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo $package_manager install make -y
 fi
 
-# Associate Elastic IP
-aws configure set default.region $aws_region
-aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
-aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
-aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
-aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
-
-# Setup ufw firewall with deny rules and then allow rules
-sudo ufw default allow outgoing
-sudo ufw default deny incoming
-
-sudo ufw allow 666/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# Enable firewall
-sudo ufw --force enable
-
 # Add root user to the docker group
 sudo usermod -aG docker $default_user
 
@@ -114,11 +96,28 @@ docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/rel
 sudo curl --retry 3 --retry-delay 5 -L "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
+# Associate Elastic IP
+aws configure set default.region $aws_region
+aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
+aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
+aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
+aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
+
+# Setup ufw firewall with deny rules and then allow rules
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+sudo ufw allow 666/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
 # If gameserver open srcds ports 27015-27030
 if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo ufw allow 27015:27030/udp
   sudo ufw allow 27015:27030/tcp
 fi
+
+# Enable firewall
+sudo ufw --force enable
 
 # Setup fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
