@@ -171,6 +171,8 @@ setup_gameserver() {
 
 # Function to configure SSHD
 configure_and_restart_sshd() {
+  echo "Configuring SSHD..."
+  cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
   sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
   systemctl enable ssh
   systemctl restart ssh
