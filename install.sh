@@ -63,6 +63,13 @@ if [ "$sever_type" == 2 ] || [ "$server_type" == 3 ]; then
   sudo $package_manager install make -y
 fi
 
+# Associate Elastic IP
+aws configure set default.region $aws_region
+aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
+aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
+aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
+aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
+
 # Add root user to the docker group
 sudo usermod -aG docker $default_user
 
@@ -166,13 +173,6 @@ fi
 sed -i 's/#Port 22/Port 666/g' /etc/ssh/sshd_config
 sudo systemctl enable ssh
 sudo systemctl restart ssh
-
-# Associate Elastic IP
-aws configure set default.region $aws_region
-aws_elastic_ip=$(aws s3 cp s3://${aws_bucket_name}/elastic-ip.txt - | tr -d '\r')
-aws_token=$(curl --request PUT "http://169.254.169.254/latest/api/token" --header "X-aws-ec2-metadata-token-ttl-seconds: 3600")
-aws_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id --header "X-aws-ec2-metadata-token: $aws_token")
-aws ec2 associate-address --instance-id $aws_instance_id --public-ip $aws_elastic_ip
 
 # Upgrade and reboot
 sudo $package_manager upgrade -y && sudo reboot
