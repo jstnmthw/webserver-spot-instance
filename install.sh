@@ -181,7 +181,7 @@ configure_and_restart_sshd() {
 # Function to upgrade packages and reboot
 upgrade_and_reboot() {
   echo "Upgrading packages and rebooting..."
-  $package_manager upgrade -y
+  $package_manager update -y && $package_manager upgrade -y && $package_manager autoremove -y 
   reboot
 }
 
