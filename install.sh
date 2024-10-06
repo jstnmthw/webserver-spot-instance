@@ -212,4 +212,4 @@ setup_fail2ban
 configure_and_restart_sshd
 associate_elastic_ip
 setup_gameserver
-upgrade_and_reboot
+# upgrade_and_reboot
