@@ -143,8 +143,8 @@ install_custom_motd() {
 disable_esm_update_motd() {
   echo "Disabling ESM update motd..."
   sed -Ezi.orig \
-    -e 's/(def _output_esm_service_status.*?:\n)/\1    return\n/' \
-    -e 's/(def _output_esm_package_alert.*?:\n)/\1    return\n/' \
+    -e 's/(def _output_esm_service_status.*?:\n)/\1    return None\n/' \
+    -e 's/(def _output_esm_package_alert.*?:\n)/\1    return None\n/' \
     /usr/lib/update-notifier/apt_check.py
   /usr/lib/update-notifier/update-motd-updates-available --force
   echo "Done."
