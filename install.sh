@@ -47,6 +47,7 @@ set_hostname() {
 # Function to update and install necessary packages
 update_and_install_packages() {
   $package_manager update -y
+  $package_manager upgrade -y
   $package_manager install docker.io git iftop fail2ban -y
   service docker start
   snap install aws-cli --classic
